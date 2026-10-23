@@ -39,19 +39,19 @@ AppUser 1 --- * RentalOrder 1 --- * RentalItem * --- 1 EquipmentUnit
 
 Все операции выполняются в сервисном слое в транзакциях. Некорректное состояние возвращает `400`, отсутствующая сущность - `404`.
 
-## Настройка PostgreSQL
+## Подготовка PostgreSQL
 
-1. Создай БД `tourism_rental` от имени администратора PostgreSQL.
-2. Выполни [`db/create-app-user.sql`](db/create-app-user.sql), заменив пример пароля на свой.
-3. Скопируй `.env.example` в `.env` и укажи параметры подключения. `.env` добавлен в `.gitignore`.
-4. Перед запуском задай переменные среды из `.env` любым удобным способом.
+1. База данных `tourism_rental` создаётся от имени администратора PostgreSQL.
+2. Скрипт [`db/create-app-user.sql`](db/create-app-user.sql) создаёт пользователя приложения с ограниченными правами. Пример пароля в скрипте заменяется на фактический.
+3. Файл `.env` создаётся на основе `.env.example` и содержит параметры подключения. `.env` исключён из Git через `.gitignore`.
+4. Перед запуском приложения переменные среды из `.env` должны быть заданы любым удобным способом.
 
-Пример для PowerShell:
+Пример задания переменных в PowerShell:
 
 ```powershell
 $env:SPRING_DATASOURCE_URL = "jdbc:postgresql://localhost:5432/tourism_rental"
 $env:DB_USER = "rental_app"
-$env:DB_PASSWORD = "ваш-пароль"
+$env:DB_PASSWORD = "пароль-пользователя-rental-app"
 mvn spring-boot:run
 ```
 
@@ -75,4 +75,3 @@ Postman-коллекция находится в [`postman/RBPO-Lab3.postman_col
 - `204 No Content`: удаление;
 - `400 Bad Request`: нарушены правила предметной области;
 - `404 Not Found`: сущность не найдена.
-
