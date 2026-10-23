@@ -1,0 +1,82 @@
+{
+  "info": {
+    "name": "РБПО ЛР3 - прокат туристического снаряжения",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "userId", "value": "" },
+    { "key": "equipmentId", "value": "" },
+    { "key": "orderId", "value": "" },
+    { "key": "itemId", "value": "" },
+    { "key": "cancelOrderId", "value": "" },
+    { "key": "inspectionId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Users CRUD",
+      "item": [
+        { "name": "Create user", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('userId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"name\": \"Анна Смирнова\",\n  \"email\": \"anna.smirnova@example.com\"\n}"}, "url": "{{baseUrl}}/api/users" } },
+        { "name": "Get all users", "request": { "method": "GET", "url": "{{baseUrl}}/api/users" } },
+        { "name": "Get user", "request": { "method": "GET", "url": "{{baseUrl}}/api/users/{{userId}}" } },
+        { "name": "Patch user", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"name\": \"Анна С.\"\n}"}, "url": "{{baseUrl}}/api/users/{{userId}}" } },
+        { "name": "Delete user (run only after deleting its orders)", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/users/{{userId}}" } }
+      ]
+    },
+    {
+      "name": "Equipment CRUD",
+      "item": [
+        { "name": "Create equipment", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('equipmentId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"inventoryNumber\": \"TENT-099\",\n  \"type\": \"Палатка\",\n  \"dailyPrice\": 1500.00,\n  \"condition\": \"AVAILABLE\"\n}"}, "url": "{{baseUrl}}/api/equipment-units" } },
+        { "name": "Get all equipment", "request": { "method": "GET", "url": "{{baseUrl}}/api/equipment-units" } },
+        { "name": "Get equipment", "request": { "method": "GET", "url": "{{baseUrl}}/api/equipment-units/{{equipmentId}}" } },
+        { "name": "Patch equipment", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"dailyPrice\": 1600.00\n}"}, "url": "{{baseUrl}}/api/equipment-units/{{equipmentId}}" } },
+        { "name": "Delete equipment (run only after deleting its rental items)", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/equipment-units/{{equipmentId}}" } }
+      ]
+    },
+    {
+      "name": "Rental orders CRUD",
+      "item": [
+        { "name": "Create rental order", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('orderId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"userId\": {{userId}},\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-11-04\"\n}"}, "url": "{{baseUrl}}/api/rental-orders" } },
+        { "name": "Get all orders", "request": { "method": "GET", "url": "{{baseUrl}}/api/rental-orders" } },
+        { "name": "Get order", "request": { "method": "GET", "url": "{{baseUrl}}/api/rental-orders/{{orderId}}" } },
+        { "name": "Patch order", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"endDate\": \"2026-11-05\"\n}"}, "url": "{{baseUrl}}/api/rental-orders/{{orderId}}" } },
+        { "name": "Delete order (run only for non-active order)", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/rental-orders/{{orderId}}" } }
+      ]
+    },
+    {
+      "name": "Rental items CRUD",
+      "item": [
+        { "name": "Create rental item", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('itemId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"rentalOrderId\": {{orderId}},\n  \"equipmentUnitId\": {{equipmentId}}\n}"}, "url": "{{baseUrl}}/api/rental-items" } },
+        { "name": "Get all rental items", "request": { "method": "GET", "url": "{{baseUrl}}/api/rental-items" } },
+        { "name": "Get rental item", "request": { "method": "GET", "url": "{{baseUrl}}/api/rental-items/{{itemId}}" } },
+        { "name": "Patch rental item", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"returnStatus\": \"NOT_RETURNED\"\n}"}, "url": "{{baseUrl}}/api/rental-items/{{itemId}}" } },
+        { "name": "Delete rental item", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/rental-items/{{itemId}}" } }
+      ]
+    },
+    {
+      "name": "Inspection records CRUD",
+      "item": [
+        { "name": "Create inspection", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('inspectionId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"rentalItemId\": {{itemId}},\n  \"inspectionType\": \"ISSUE\",\n  \"condition\": \"GOOD\"\n}"}, "url": "{{baseUrl}}/api/inspection-records" } },
+        { "name": "Get all inspections", "request": { "method": "GET", "url": "{{baseUrl}}/api/inspection-records" } },
+        { "name": "Get inspection", "request": { "method": "GET", "url": "{{baseUrl}}/api/inspection-records/{{inspectionId}}" } },
+        { "name": "Patch inspection", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"condition\": \"GOOD\"\n}"}, "url": "{{baseUrl}}/api/inspection-records/{{inspectionId}}" } },
+        { "name": "Delete inspection", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/inspection-records/{{inspectionId}}" } }
+      ]
+    },
+    {
+      "name": "Business operations scenario",
+      "item": [
+        { "name": "0a. Create scenario user", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('userId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"name\": \"Клиент сценария\",\n  \"email\": \"scenario.client@example.com\"\n}"}, "url": "{{baseUrl}}/api/users" } },
+        { "name": "0b. Create scenario equipment", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('equipmentId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"inventoryNumber\": \"SCENARIO-TENT-001\",\n  \"type\": \"Палатка\",\n  \"dailyPrice\": 1500.00,\n  \"condition\": \"AVAILABLE\"\n}"}, "url": "{{baseUrl}}/api/equipment-units" } },
+        { "name": "0c. Create scenario draft order", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('orderId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"userId\": {{userId}},\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-11-04\"\n}"}, "url": "{{baseUrl}}/api/rental-orders" } },
+        { "name": "1. Add available equipment to draft order", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('itemId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"equipmentUnitId\": {{equipmentId}}\n}"}, "url": "{{baseUrl}}/api/rental-orders/{{orderId}}/items" } },
+        { "name": "2. Issue order", "request": { "method": "POST", "url": "{{baseUrl}}/api/rental-orders/{{orderId}}/issue" } },
+        { "name": "3. Return item in good condition", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"condition\": \"GOOD\"\n}"}, "url": "{{baseUrl}}/api/rental-items/{{itemId}}/return" } },
+        { "name": "4a. Create another draft order", "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('cancelOrderId', pm.response.json().id);"] } }], "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"userId\": {{userId}},\n  \"startDate\": \"2026-12-01\",\n  \"endDate\": \"2026-12-02\"\n}"}, "url": "{{baseUrl}}/api/rental-orders" } },
+        { "name": "4b. Reserve equipment in the second order", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"equipmentUnitId\": {{equipmentId}}\n}"}, "url": "{{baseUrl}}/api/rental-orders/{{cancelOrderId}}/items" } },
+        { "name": "4c. Cancel draft order and release equipment", "request": { "method": "POST", "url": "{{baseUrl}}/api/rental-orders/{{cancelOrderId}}/cancel" } },
+        { "name": "5. Send available equipment to maintenance", "request": { "method": "POST", "url": "{{baseUrl}}/api/equipment-units/{{equipmentId}}/maintenance" } }
+      ]
+    }
+  ]
+}
